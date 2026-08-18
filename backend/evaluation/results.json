@@ -1,0 +1,136 @@
+{
+  "summary": {
+    "total_queries": 4,
+    "successful": 0,
+    "success_rate": 0.0,
+    "grounded_rate": 0,
+    "refusal_rate": 1.0,
+    "latency_overall": {
+      "p50": 0.1904125019791536,
+      "p70": 0.19854720158036795,
+      "p90": 0.24449040356557816,
+      "p95": 0.2559762040618807,
+      "p99": 0.26516484445892274,
+      "p100": 0.26746200455818325,
+      "mean": 0.1924860007420648,
+      "stdev": 0.05957405499502661
+    },
+    "latency_successful": {
+      "p50": 0.0,
+      "p70": 0.0,
+      "p90": 0.0,
+      "p95": 0.0,
+      "p99": 0.0,
+      "p100": 0,
+      "mean": 0
+    },
+    "by_language": {
+      "en": {
+        "count": 2,
+        "p50": 0.1904125019791536,
+        "p70": 0.190603501687292,
+        "p90": 0.19079450139543042,
+        "p99": 0.1908804512640927,
+        "p100": 0.19089000124949962,
+        "success_rate": 0.0
+      },
+      "hi": {
+        "count": 2,
+        "p50": 0.19455949950497597,
+        "p70": 0.22372050152625889,
+        "p90": 0.2528815035475418,
+        "p99": 0.2660039544571191,
+        "p100": 0.26746200455818325,
+        "success_rate": 0.0
+      }
+    },
+    "by_query_type": {
+      "ENTITY": {
+        "count": 2,
+        "p50": 0.22869850363349542,
+        "p70": 0.24420390400337055,
+        "p90": 0.2597093043732457,
+        "p99": 0.2666867345396895,
+        "p100": 0.26746200455818325
+      },
+      "PERSON": {
+        "count": 2,
+        "p50": 0.15627349785063416,
+        "p70": 0.17012009921018034,
+        "p90": 0.18396670056972653,
+        "p99": 0.1901976711815223,
+        "p100": 0.19089000124949962
+      }
+    },
+    "bootstrap_ci_95": [
+      0.0,
+      0.0
+    ]
+  },
+  "detailed_results": [
+    {
+      "trace_id": "hi_ENTITY_0",
+      "language": "hi",
+      "query_type": "ENTITY",
+      "total_latency_ms": 0.26746200455818325,
+      "stt_latency_ms": 0,
+      "embed_latency_ms": 0,
+      "retrieval_latency_ms": 0,
+      "generation_latency_ms": 0,
+      "grounding_latency_ms": 0,
+      "tts_latency_ms": 0,
+      "success": false,
+      "grounded": false,
+      "refusal_reason": "run_pipeline() got an unexpected keyword argument 'use_mock_generation'",
+      "answer_length": 0
+    },
+    {
+      "trace_id": "hi_PERSON_0",
+      "language": "hi",
+      "query_type": "PERSON",
+      "total_latency_ms": 0.1216569944517687,
+      "stt_latency_ms": 0,
+      "embed_latency_ms": 0,
+      "retrieval_latency_ms": 0,
+      "generation_latency_ms": 0,
+      "grounding_latency_ms": 0,
+      "tts_latency_ms": 0,
+      "success": false,
+      "grounded": false,
+      "refusal_reason": "run_pipeline() got an unexpected keyword argument 'use_mock_generation'",
+      "answer_length": 0
+    },
+    {
+      "trace_id": "en_ENTITY_0",
+      "language": "en",
+      "query_type": "ENTITY",
+      "total_latency_ms": 0.1899350027088076,
+      "stt_latency_ms": 0,
+      "embed_latency_ms": 0,
+      "retrieval_latency_ms": 0,
+      "generation_latency_ms": 0,
+      "grounding_latency_ms": 0,
+      "tts_latency_ms": 0,
+      "success": false,
+      "grounded": false,
+      "refusal_reason": "run_pipeline() got an unexpected keyword argument 'use_mock_generation'",
+      "answer_length": 0
+    },
+    {
+      "trace_id": "en_PERSON_0",
+      "language": "en",
+      "query_type": "PERSON",
+      "total_latency_ms": 0.19089000124949962,
+      "stt_latency_ms": 0,
+      "embed_latency_ms": 0,
+      "retrieval_latency_ms": 0,
+      "generation_latency_ms": 0,
+      "grounding_latency_ms": 0,
+      "tts_latency_ms": 0,
+      "success": false,
+      "grounded": false,
+      "refusal_reason": "run_pipeline() got an unexpected keyword argument 'use_mock_generation'",
+      "answer_length": 0
+    }
+  ]
+}

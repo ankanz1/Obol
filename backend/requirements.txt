@@ -1,0 +1,45 @@
+# Core
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+python-dotenv
+
+# Sarvam AI
+sarvamai==0.1.31a4
+
+# Vector DB
+qdrant-client
+
+# ML/Embeddings (CPU)
+onnxruntime
+transformers
+tokenizers
+sentence-transformers
+huggingface-hub
+
+# Dataset
+datasets
+polars
+# pyarrow  # Optional
+
+# LangGraph
+langgraph
+langchain-core
+
+# Guardrails/NLI
+# fasttext  # Optional - needs build tools
+numpy
+
+# Audio
+websockets
+# webrtcvad  # Not compatible with Python 3.14+
+
+# Utilities
+tqdm
+orjson
+xxhash
+
+# Evaluation
+# scikit-learn  # May need build
+# scipy  # May need build
