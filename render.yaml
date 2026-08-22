@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: obol-backend
+    env: docker
+    dockerfilePath: ./backend/Dockerfile
+    envVars:
+      - key: SARVAM_API_KEY
+        sync: false
+      - key: QDRANT_URL
+        sync: false
+      - key: QDRANT_API_KEY
+        sync: false
+      - key: PORT
+        value: 8000
+    healthCheckPath: /health

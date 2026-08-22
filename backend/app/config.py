@@ -8,8 +8,8 @@ class Settings(BaseSettings):
     sarvam_api_key: str = ""
     
     # Qdrant
-    qdrant_url: str = "https://064705f0-4e5b-4c39-a888-e1517aa2219b.sa-east-1-0.aws.cloud.qdrant.io"
-    qdrant_api_key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOiJtIiwic3ViamVjdCI6ImFwaS1rZXk6NDQyMTk4OGEtMzk1Zi00YTM2LTljMDgtNTNmODkzZmJkYzdiIn0.Bq4iUSWSu_9BvC0A7sJI71_9ZGFd5T2L7Inpugzy_7Y"
+    qdrant_url: str = ""
+    qdrant_api_key: str = ""
     
     # Model settings
     embedding_model: str = "intfloat/multilingual-e5-small"

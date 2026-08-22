@@ -6,15 +6,17 @@ interface VoiceRecorderProps {
   isProcessing: boolean;
   language: string;
   disabled?: boolean;
+  onAudioData: (audioBase64: string) => void;
 }
 
 export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
   isProcessing,
   language,
-  disabled = false
+  disabled = false,
+  onAudioData
 }) => {
   const { isRecording, audioLevel, toggleRecording } = useAudioRecorder({
-    onData: () => {},
+    onData: onAudioData,
     onStart: () => console.log('Recording started'),
     onStop: () => console.log('Recording stopped'),
     onError: (err) => console.error('Recording error:', err)

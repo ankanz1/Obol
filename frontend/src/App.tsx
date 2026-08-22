@@ -72,6 +72,15 @@ export default function App() {
     onError: () => setError('Connection error')
   });
 
+  const handleAudioData = useCallback((audioBase64: string) => {
+    send({
+      type: 'audio',
+      audio_base64: audioBase64,
+      language
+    });
+    setIsProcessing(true);
+  }, [send, language]);
+
   const handleLanguageChange = (newLang: string) => {
     setLanguage(newLang);
     send({ type: 'config', language: newLang });
@@ -105,6 +114,7 @@ export default function App() {
             isProcessing={isProcessing}
             language={language}
             disabled={!wsConnected}
+            onAudioData={handleAudioData}
           />
           
           {error && (

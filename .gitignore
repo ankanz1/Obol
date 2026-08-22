@@ -30,6 +30,9 @@ backend/data/raw/
 backend/data/chunks/
 backend/data/embeddings/
 *.jsonl
+backend/models/
+cloudflared.exe
+ngrok.zip
 
 # Build
 dist/
