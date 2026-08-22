@@ -245,14 +245,3 @@ pip install onnxruntime-gpu torch --index-url https://download.pytorch.org/whl/c
 # Run evaluation (fast on GPU)
 python backend/evaluation/latency_harness.py
 ```
-
-## 📝 License
-
-MIT License - See LICENSE file.
-
-## 🙏 Acknowledgments
-
-- [Sarvam AI](https://sarvam.ai) for Indic language models
-- [AI4Bharat](https://ai4bharat.iitm.ac.in) for MSMARCO-XI dataset
-- [Qdrant](https://qdrant.tech) for vector database
-- [LangGraph](https://langchain-ai.github.io/langgraph) for orchestration
