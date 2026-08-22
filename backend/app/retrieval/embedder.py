@@ -3,42 +3,67 @@ import onnxruntime as ort
 from pathlib import Path
 from typing import List, Union
 import logging
-from transformers import AutoTokenizer, AutoModel
-import torch
+from transformers import AutoTokenizer
+from huggingface_hub import hf_hub_download
 
 logger = logging.getLogger(__name__)
 
 
 class ONNXEmbedder:
-    """Fast embedder for multilingual-e5-small (uses transformers directly for now)."""
+    """Fast embedder for multilingual-e5-small using ONNX runtime."""
     
     def __init__(self, model_path: str = None, providers: List[str] = None):
-        # Use local model if available
+        # Use local model if available (resolve relative to this file, cwd-independent)
         if model_path is None:
-            local_path = Path("backend/models/multilingual-e5-small")
+            local_path = Path(__file__).resolve().parent.parent.parent / "models" / "multilingual-e5-small"
             if local_path.exists():
                 model_path = str(local_path)
             else:
                 model_path = "intfloat/multilingual-e5-small"
         
         self.model_path = model_path
-        self.tokenizer = AutoTokenizer.from_pretrained(self.model_path)
-        self.model = AutoModel.from_pretrained(self.model_path)
-        self.model.eval()
         
-        logger.info(f"Model loaded from {self.model_path}")
+        # Load tokenizer
+        self.tokenizer = AutoTokenizer.from_pretrained(self.model_path)
+        
+        # Load ONNX model
+        if providers is None:
+            providers = ['CPUExecutionProvider']
+            try:
+                if 'CUDAExecutionProvider' in ort.get_available_providers():
+                    providers.insert(0, 'CUDAExecutionProvider')
+            except:
+                pass
+        
+        # Try to load local ONNX model, otherwise download from HF
+        onnx_path = None
+        if Path(self.model_path).exists():
+            onnx_path = Path(self.model_path) / "model.onnx"
+            if not onnx_path.exists():
+                onnx_path = Path(self.model_path) / "onnx" / "model.onnx"
+        
+        if onnx_path is None or not onnx_path.exists():
+            # Download ONNX model from HF
+            try:
+                onnx_path = hf_hub_download(
+                    repo_id="onnx-community/multilingual-e5-small",
+                    filename="model.onnx",
+                    subfolder="onnx"
+                )
+            except:
+                # Fallback to transformers ONNX export
+                onnx_path = hf_hub_download(
+                    repo_id="intfloat/multilingual-e5-small",
+                    filename="onnx/model.onnx"
+                )
+        
+        self.session = ort.InferenceSession(str(onnx_path), providers=providers)
+        logger.info(f"ONNX Embedder loaded from {onnx_path} with providers: {providers}")
     
-    def _mean_pooling(self, token_embeddings: torch.Tensor, attention_mask: torch.Tensor) -> torch.Tensor:
-        """Mean pooling with attention mask."""
-        input_mask_expanded = attention_mask.unsqueeze(-1).expand(token_embeddings.size()).float()
-        sum_embeddings = torch.sum(token_embeddings * input_mask_expanded, 1)
-        sum_mask = torch.clamp(input_mask_expanded.sum(1), min=1e-9)
-        return sum_embeddings / sum_mask
-    
-    def _normalize(self, embeddings: torch.Tensor) -> torch.Tensor:
+    def _normalize(self, embeddings: np.ndarray) -> np.ndarray:
         """L2 normalize embeddings."""
-        norms = torch.norm(embeddings, dim=1, keepdim=True)
-        return embeddings / torch.clamp(norms, min=1e-12)
+        norms = np.linalg.norm(embeddings, axis=1, keepdims=True)
+        return embeddings / np.clip(norms, 1e-12, None)
     
     def embed(self, texts: Union[str, List[str]], batch_size: int = 32) -> np.ndarray:
         """Generate embeddings for texts."""
@@ -56,21 +81,32 @@ class ONNXEmbedder:
                 padding=True,
                 truncation=True,
                 max_length=512,
-                return_tensors="pt"
+                return_tensors="np"
             )
             
-            # Run inference
-            with torch.no_grad():
-                outputs = self.model(**encoded)
-                token_embeddings = outputs.last_hidden_state
-                
-                # Mean pooling
-                embeddings = self._mean_pooling(token_embeddings, encoded["attention_mask"])
-                
-                # Normalize
-                embeddings = self._normalize(embeddings)
+            # Run inference (some ONNX exports also require token_type_ids)
+            feed = {
+                'input_ids': encoded['input_ids'].astype(np.int64),
+                'attention_mask': encoded['attention_mask'].astype(np.int64)
+            }
+            input_names = {inp.name for inp in self.session.get_inputs()}
+            if 'token_type_ids' in input_names:
+                feed['token_type_ids'] = np.zeros_like(encoded['input_ids'], dtype=np.int64)
             
-            all_embeddings.append(embeddings.numpy())
+            outputs = self.session.run(None, feed)
+            
+            token_embeddings = outputs[0]
+            
+            # Mean pooling
+            input_mask_expanded = np.expand_dims(encoded['attention_mask'], -1).repeat(token_embeddings.shape[-1], axis=-1)
+            sum_embeddings = np.sum(token_embeddings * input_mask_expanded, axis=1)
+            sum_mask = np.clip(np.sum(input_mask_expanded, axis=1), 1e-9, None)
+            embeddings = sum_embeddings / sum_mask
+            
+            # Normalize
+            embeddings = self._normalize(embeddings)
+            
+            all_embeddings.append(embeddings)
         
         return np.vstack(all_embeddings) if all_embeddings else np.array([])
     

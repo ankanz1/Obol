@@ -3,22 +3,18 @@ import { useAudioRecorder } from '../hooks/useAudioRecorder';
 import { WaveformVisualizer } from './WaveformVisualizer';
 
 interface VoiceRecorderProps {
-  onTranscript: (transcript: string) => void;
-  onAudioData: (audioBase64: string) => void;
   isProcessing: boolean;
   language: string;
   disabled?: boolean;
 }
 
 export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
-  onTranscript,
-  onAudioData,
   isProcessing,
   language,
   disabled = false
 }) => {
-  const { isRecording, audioLevel, startRecording, stopRecording, toggleRecording } = useAudioRecorder({
-    onData: onAudioData,
+  const { isRecording, audioLevel, toggleRecording } = useAudioRecorder({
+    onData: () => {},
     onStart: () => console.log('Recording started'),
     onStop: () => console.log('Recording stopped'),
     onError: (err) => console.error('Recording error:', err)

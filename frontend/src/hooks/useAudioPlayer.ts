@@ -4,7 +4,6 @@ export function useAudioPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioContextRef = useRef<AudioContext | null>(null);
   const sourceRef = useRef<AudioBufferSourceNode | null>(null);
-  const queueRef = useRef<AudioBuffer[]>([]);
   const playingRef = useRef(false);
 
   const initAudioContext = useCallback(() => {

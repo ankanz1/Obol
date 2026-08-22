@@ -15,7 +15,7 @@ class SarvamChatClient:
         if not use_mock:
             self.client = SarvamAI(
                 api_subscription_key=settings.sarvam_api_key,
-                timeout=2.0  # Short timeout to fail fast and fall back to mock
+                timeout=30.0  # Longer timeout for 105B model
             )
         else:
             self.client = None

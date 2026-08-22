@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 
+const WS_BASE_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:8000'
+
 interface UseWebSocketOptions {
   sessionId: string;
   onMessage: (data: any) => void;
@@ -11,12 +13,12 @@ interface UseWebSocketOptions {
 export function useWebSocket({ sessionId, onMessage, onOpen, onClose, onError }: UseWebSocketOptions) {
   const [connected, setConnected] = useState(false);
   const wsRef = useRef<WebSocket | null>(null);
-  const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const reconnectAttempts = useRef(0);
   const maxReconnectAttempts = 5;
 
   const connect = useCallback(() => {
-    const wsUrl = `ws://localhost:8000/ws/${sessionId}`;
+    const wsUrl = `${WS_BASE_URL}/ws/${sessionId}`;
     
     try {
       const ws = new WebSocket(wsUrl);

@@ -1,14 +1,9 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { Message, PipelineResult, SUPPORTED_LANGUAGES } from './types';
+import { useState, useCallback, useRef } from 'react';
+import { Message, SUPPORTED_LANGUAGES } from './types';
 import { useWebSocket } from './hooks/useWebSocket';
-import { useAudioRecorder } from './hooks/useAudioRecorder';
-import { useAudioPlayer } from './hooks/useAudioPlayer';
 import { VoiceRecorder } from './components/VoiceRecorder';
 import { MessageList } from './components/MessageList';
-import { LanguageSelector } from './components/LanguageSelector';
-import { WaveformVisualizer } from './components/WaveformVisualizer';
-
-const WS_URL = 'ws://localhost:8000/ws/';
+import { LanguageSelector } from './components/LanguageSelector';;
 
 function generateSessionId(): string {
   return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -46,7 +41,7 @@ export default function App() {
           content: data.answer,
           language: data.language,
           timestamp: new Date(),
-          audioUrl: data.audio_base64 ? `data:audio/wav;base64,${data.audio_base64}` : undefined,
+          audioUrl: data.audioBase64 ? `data:audio/wav;base64,${data.audioBase64}` : undefined,
           grounded: data.grounded,
           refusalReason: data.refusalReason,
           latencyMs: data.latencyMs
@@ -69,79 +64,12 @@ export default function App() {
     }
   }, []);
 
-  // Use text API for testing (bypasses STT/TTS which need different API keys)
-const useTextApi = true;
-
-const { connected, send, disconnect } = useWebSocket({
+  const { send } = useWebSocket({
     sessionId,
     onMessage: handleWsMessage,
     onOpen: () => setWsConnected(true),
     onClose: () => setWsConnected(false),
     onError: () => setError('Connection error')
-  });
-
-  // Audio recorder - we'll use REST for simplicity in demo
-  const { isRecording, audioLevel, startRecording, stopRecording, toggleRecording } = useAudioRecorder({
-    onData: async (audioBase64) => {
-      pendingAudioRef.current = audioBase64;
-    },
-    onStart: () => {},
-    onStop: async () => {
-      if (pendingAudioRef.current && !isProcessing) {
-        setIsProcessing(true);
-        setError(null);
-        
-        // For testing: use text API with a mock transcript
-        // In production, this would use the audio API
-        const mockTranscript = "what is the capital of india";
-        
-        try {
-          const response = await fetch('http://localhost:8000/api/query/text', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              query: mockTranscript,
-              language,
-              session_id: sessionId
-            })
-          });
-          
-          const result: PipelineResult = await response.json();
-          
-          const userMsg: Message = {
-            id: result.traceId || Date.now().toString(),
-            role: 'user',
-            content: result.transcript,
-            language: result.language,
-            timestamp: new Date(),
-            grounded: result.grounded,
-            refusalReason: result.refusalReason,
-            latencyMs: result.latencyMs
-          };
-          
-          const assistantMsg: Message = {
-            id: `${result.traceId}_resp`,
-            role: 'assistant',
-            content: result.answer,
-            language: result.language,
-            timestamp: new Date(),
-            audioUrl: result.audio_base64 ? `data:audio/wav;base64,${result.audio_base64}` : undefined,
-            grounded: result.grounded,
-            refusalReason: result.refusalReason,
-            latencyMs: result.latencyMs
-          };
-          
-          setMessages(prev => [...prev, userMsg, assistantMsg]);
-        } catch (err) {
-          console.error('Query failed:', err);
-          setError('Failed to process query');
-        } finally {
-          setIsProcessing(false);
-          pendingAudioRef.current = '';
-        }
-      }
-    },
-    onError: (err) => setError(err.message)
   });
 
   const handleLanguageChange = (newLang: string) => {
@@ -174,8 +102,6 @@ const { connected, send, disconnect } = useWebSocket({
 
         <div className="recorder-panel">
           <VoiceRecorder
-            onTranscript={() => {}}
-            onAudioData={() => {}}
             isProcessing={isProcessing}
             language={language}
             disabled={!wsConnected}

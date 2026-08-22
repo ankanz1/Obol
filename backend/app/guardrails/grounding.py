@@ -77,7 +77,10 @@ def check_grounding(answer: str, context: str, threshold: float = 0.7) -> Tuple[
             }
         )
         
-        logits = outputs[0][0]
+        logits = outputs[0]
+        # Handle batch dimension: logits shape is (batch_size, num_classes)
+        if logits.ndim == 2:
+            logits = logits[0]  # Take first (and only) batch item
         
         # Softmax
         exp_logits = np.exp(logits - np.max(logits))

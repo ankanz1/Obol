@@ -16,6 +16,8 @@ from app.config import settings
 from app.pipeline.graph import run_pipeline
 from app.pipeline.schemas import PipelineInput, PipelineOutput, HealthResponse
 from app.retrieval.qdrant_client import get_qdrant
+from app.retrieval.embedder import get_embedder
+from app.guardrails.grounding import _load_nli_model
 from app.utils.audio import base64_to_pcm, pcm_to_base64
 
 logging.basicConfig(level=logging.INFO)
@@ -43,6 +45,21 @@ async def lifespan(app: FastAPI):
         logger.info("Qdrant connection verified")
     except Exception as e:
         logger.warning(f"Qdrant connection issue: {e}")
+    
+    # Pre-load models in background to avoid first-request latency
+    logger.info("Pre-loading embedder...")
+    try:
+        get_embedder()
+        logger.info("Embedder loaded")
+    except Exception as e:
+        logger.warning(f"Embedder pre-load failed: {e}")
+    
+    logger.info("Pre-loading NLI model...")
+    try:
+        _load_nli_model()
+        logger.info("NLI model loaded")
+    except Exception as e:
+        logger.warning(f"NLI model pre-load failed: {e}")
     
     yield
     
