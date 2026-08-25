@@ -110,7 +110,7 @@ npm run dev
 # UI at http://localhost:3000
 ```
 
-## 🔧 Configuration
+## Configuration
 
 Edit `.env`:
 ```bash
@@ -129,7 +129,7 @@ RETRIEVAL_SCORE_THRESHOLD=0.65
 GROUNDING_THRESHOLD=0.7
 ```
 
-## 🧪 Latency Evaluation
+## Latency Evaluation
 
 ```bash
 cd backend
@@ -139,7 +139,7 @@ python evaluation/latency_harness.py
 
 Outputs P50/P70/P90/P99/P100 latencies by language, query type, and component.
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 voice-rag-msmarco/
@@ -201,7 +201,7 @@ voice-rag-msmarco/
  "latency_ms": 187, "trace_id": "abc123"}
 ```
 
-## 📊 Chunking Strategies (5)
+## Chunking Strategies (5)
 
 1. **Passage-Level**: Each passage as chunk (~11M chunks)
 2. **Query-Passage Pair**: Query + selected passage (~1M)
@@ -211,7 +211,7 @@ voice-rag-msmarco/
 
 All strategies applied → unified index with `source` field.
 
-## 🛡️ Guardrails
+##  Guardrails
 
 | Layer | Method | Threshold |
 |-------|--------|-----------|
@@ -222,7 +222,7 @@ All strategies applied → unified index with `source` field.
 | Hallucination | Self-consistency (n=2) | Jaccard > 0.6 |
 | Output Safety | Regex | PII, toxicity |
 
-## 🎯 Latency Optimization
+## Latency Optimization
 
 - **ONNX Runtime** for embeddings/NLI (CPU/GPU)
 - **Connection pooling** for Qdrant/Sarvam
@@ -231,13 +231,7 @@ All strategies applied → unified index with `source` field.
 - **Speculative embedding** during STT
 - **Caching** frequent queries (optional)
 
-## 🤝 GPU Collaboration
-
-For friend's GPU machine:
-```bash
-# Clone repo
-git clone <repo>
-cd voice-rag-msmarco
+## GPU 
 
 # Install GPU deps
 pip install onnxruntime-gpu torch --index-url https://download.pytorch.org/whl/cu121
