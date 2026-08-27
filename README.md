@@ -2,7 +2,7 @@
 
 A voice-enabled Retrieval-Augmented Generation system supporting 18 Indian languages + English. Built with Sarvam AI (STT, LLM, TTS), Qdrant vector database, and LangGraph orchestration.
 
-## 🎯 Features
+## Features
 
 - **Speech-to-Text**: Sarvam Saaras v3 (12+ Indic languages)
 - **LLM**: Sarvam-105B (128K context, Indic-optimized)
