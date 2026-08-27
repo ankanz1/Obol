@@ -13,7 +13,7 @@ A voice-enabled Retrieval-Augmented Generation system supporting 18 Indian langu
 - **Latency Target**: <200ms P50 end-to-end
 - **Frontend**: React + WebRTC voice UI with waveform visualization
 
-## 🗣️ Supported Languages (18 Indic + English)
+## Supported Languages (18 Indic + English)
 
 | Code | Language | Native | Code | Language | Native |
 |------|----------|--------|------|----------|--------|
@@ -28,7 +28,7 @@ A voice-enabled Retrieval-Augmented Generation system supporting 18 Indian langu
 | doi | Dogri | डोगरी | sat | Santali | ᱥᱟᱱᱛᱟᱲᱤ |
 | en | English | English | | | |
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 Voice Input → WebRTC → Sarvam STT → Language Detection → Embedding (ONNX)
@@ -50,7 +50,7 @@ Voice Input → WebRTC → Sarvam STT → Language Detection → Embedding (ONNX
                                               Audio Playback
 ```
 
-## 📦 Quick Start
+##  Quick Start
 
 ### Prerequisites
 - Python 3.10+
