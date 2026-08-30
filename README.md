@@ -231,11 +231,4 @@ All strategies applied → unified index with `source` field.
 - **Speculative embedding** during STT
 - **Caching** frequent queries (optional)
 
-## GPU 
-
-# Install GPU deps
-pip install onnxruntime-gpu torch --index-url https://download.pytorch.org/whl/cu121
-
-# Run evaluation (fast on GPU)
-python backend/evaluation/latency_harness.py
 ```
